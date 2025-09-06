@@ -453,12 +453,17 @@ def simulate_through_2040(btc_data, swc_data, initial_shares, btc_holdings, star
             end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
         else:
             end_date_obj = end_date
+        
+        # Calculate current dilution rate for mNAV dampening
+        # Get the last dilution rate from recent activity
+        current_dilution_rate_pct = getattr(simulate_through_2040, 'last_dilution_rate_pct', 0.0)
             
         current_mnav = calculate_mnav_with_volatility(
             btc_value, 
             days_from_start,
             end_date=end_date_obj,
-            current_date=date
+            current_date=date,
+            dilution_rate_pct=current_dilution_rate_pct
         )
         
         # Calculate mNAV-correlated volume instead of fixed percentage
@@ -498,6 +503,14 @@ def simulate_through_2040(btc_data, swc_data, initial_shares, btc_holdings, star
                     funds_raised = daily_dilution.loc[date, 'funds_raised']
                     btc_purchased = funds_raised / btc_price
                     
+                    # Calculate dilution rate as percentage of outstanding shares
+                    dilution_rate_pct = (new_shares / current_shares) * 100
+                    
+                    # Store dilution rate for mNAV dampening (with decay)
+                    previous_rate = getattr(simulate_through_2040, 'last_dilution_rate_pct', 0.0)
+                    # Use exponential decay: new rate has 70% weight, previous 30%
+                    simulate_through_2040.last_dilution_rate_pct = 0.7 * dilution_rate_pct + 0.3 * previous_rate
+                    
                     # Apply dilution
                     current_shares += new_shares
                     current_btc += btc_purchased
@@ -506,6 +519,10 @@ def simulate_through_2040(btc_data, swc_data, initial_shares, btc_holdings, star
                 else:
                     days_since_dilution += 1
                     btc_purchased = 0.0  # Explicit zero when no dilution occurs
+                    
+                    # Decay the dilution rate when no dilution occurs
+                    previous_rate = getattr(simulate_through_2040, 'last_dilution_rate_pct', 0.0)
+                    simulate_through_2040.last_dilution_rate_pct = previous_rate * 0.95  # 5% decay per day
                 
                 # Check for quarterly dividend and preferred share revenue
                 if date >= pd.Timestamp('2026-01-01') and enable_preferred_shares:
