@@ -1,5 +1,5 @@
-# metaplanet-prediction
-Metaplanet metric prediction
+# swc-simulation
+SWC (Seabridge Gold Inc.) Bitcoin strategy simulation
 
 ## Bitcoin Price
 
@@ -26,14 +26,11 @@ Metaplanet metric prediction
 
 ## mNAV
 
-- Follows a power law, as described by Metaplanet presentations, theoretical_mcap = 35.1221 * (btc_value ** 0.89)
-https://aqsmixvnbavrufgttwsn.supabase.co/storage/v1/object/public/media-resources/en/67fa9191-0efa-467e-8996-71a68ab3a62f/q1-2025-earnings-presentation-20250514T192554478Z.pdf
-
-- 15% chance of any overshoot/undershoot (equal weight)
-- Upside random overshoot between 33% and 400%
-- Downside random overshoot between -50% and -20%
-- Sinusoidal volatility based on random noise
-- Mean reversion strength between 5% and 15%
+- Oscillating cycles between 0.8 and decaying peaks over 1-3 month periods
+- 3-zone distribution: 5% discount (0.8-1.3), 30% moderate (1.3-2.5), 65% high premium (2.5-decaying max)
+- Decaying power law for peaks: max_mnav = 7.0 * (time_in_years + 1)^(-0.15)
+- mNAV is dampened by dilution rate: for each 1% dilution, mNAV is reduced by 2%
+- Multiple overlapping sine wave cycles (45-day, 180-day, 360-day periods)
 
 ## Stock Price
 
@@ -50,18 +47,21 @@ https://aqsmixvnbavrufgttwsn.supabase.co/storage/v1/object/public/media-resource
 
 ## Daily Trading Volume
 
-- Takes the initial 3350 volume and normalizes the median to 10% of outstanding shares (Mimics MSTR performance through 2025)
-- Weekly Volume factor between 20%-100%
-- Apply a factor of mNAV to boost during high mNAV
-- Add a component of random volatility noise, this dominates at low volume
-- Bound final between 1% and 33% of outstanding shares
+- Volume correlated to mNAV cyclical model (higher mNAV = higher volume)
+- Range: 1% to 5% of outstanding shares
+- Low mNAV (≤1.0): 1.0%-2.0% volume
+- Moderate mNAV (1.0-2.0): 2.0%-3.5% volume  
+- High mNAV (>2.0): 3.5%-5.0% volume
+- Aggregated across all SWC tickers: SWC.AQ, TSWCF, 3M8.F
+- Small daily random noise (±5%)
 
 ## Daily Share Dilution
 
-- Dilution occurs only if the stock price increases from the previous day
+- Simplified dilution logic: 20% of daily trading volume when price increases from the previous day
 - Dilution occurs only if mNAV (market cap to NAV ratio) is above 1.1
-- Dilution is 20% of daily trading volume
 - Dilution only occurs on trading days (weekdays)
+- Dilution rate tracked and used to dampen future mNAV (1% dilution = 2% mNAV reduction)
+- Rate decays exponentially when no dilution occurs (5% decay per day)
 
 ## Preferred Shares
 

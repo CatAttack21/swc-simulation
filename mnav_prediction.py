@@ -2,9 +2,10 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 
-def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0.12, end_date=None, current_date=None):
+def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0.12, end_date=None, current_date=None, dilution_rate_pct=0.0):
     """
     Calculates mNAV with oscillating cycles and decaying power law peaks
+    mNAV is dampened by dilution rate: 1% dilution = 1% mNAV reduction
     Returns: Float with calculated mNAV value including volatility
     """
     # Create oscillating cycles with varying periods (30-90 days)
@@ -63,6 +64,11 @@ def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0
     # Apply slight smoothing to prevent sharp jumps
     smoothing_factor = 0.1  # How much to move toward target each day
     new_mnav = current_mnav + (base_mnav - current_mnav) * smoothing_factor + noise
+    
+    # Apply dilution dampening: For each 1% dilution, dampen mNAV by 2%
+    dilution_dampening_factor = 1.0 - (dilution_rate_pct / 50.0)  # Divide by 50 for 2x effect
+    dilution_dampening_factor = max(0.5, dilution_dampening_factor)  # Minimum 50% dampening
+    new_mnav *= dilution_dampening_factor
     
     # Ensure bounds are respected - range 0.8 to current_max_mnav (decaying)
     new_mnav = max(0.8, min(current_max_mnav, new_mnav))
