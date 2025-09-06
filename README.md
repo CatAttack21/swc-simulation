@@ -58,10 +58,10 @@ https://aqsmixvnbavrufgttwsn.supabase.co/storage/v1/object/public/media-resource
 
 ## Daily Share Dilution
 
-- Dilution occurs only if the stock price increases
-- Dilution only occurs 1x every 3 days
-- Dilution only occurs on TSE trading days (weekdays)
-- Dilution Decay models that starts at 10% of daily volume and drops to 2%
+- Dilution occurs only if the stock price increases from the previous day
+- Dilution occurs only if mNAV (market cap to NAV ratio) is above 1.1
+- Dilution is 20% of daily trading volume
+- Dilution only occurs on trading days (weekdays)
 
 ## Preferred Shares
 

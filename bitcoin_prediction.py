@@ -20,8 +20,8 @@ def btc_power_law_formula(index):
     future_boost = np.exp(days_since_genesis / 50000)  # Gradual exponential boost
     price = price * future_boost
     
-    support = 0.5 * price  # Tighter support
-    resistance = 3.0 * price  # Tighter resistance
+    support = 0.63 * price  # Tighter support
+    resistance = 2.5 * price  # Tighter resistance
     return support, price, resistance
 
 def predict_bitcoin_prices(start_date, end_date, last_price, historical_data=None):

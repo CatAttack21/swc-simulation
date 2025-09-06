@@ -4,53 +4,68 @@ from datetime import datetime
 
 def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0.12, end_date=None, current_date=None):
     """
-    Calculates mNAV with enhanced volatility and mean reversion
+    Calculates mNAV with oscillating cycles and decaying power law peaks
     Returns: Float with calculated mNAV value including volatility
     """
-    # Calculate power law baseline (theoretical fair value)
-    theoretical_mcap = 1.0 + 35.1221 * (btc_value ** 0.895)
-    power_law_mnav = theoretical_mcap / btc_value
+    # Create oscillating cycles with varying periods (30-90 days)
+    # Use multiple sine waves with different frequencies and phases for complexity
+    
+    # Primary cycle: 180-day period (6 months)
+    primary_cycle = np.sin(days_from_start * 2 * np.pi / 180)
 
-    # Calculate volatility decay with safeguards
-    volatility = base_volatility
-    if end_date is not None and current_date is not None:
-        if isinstance(end_date, str):
-            end_date = datetime.strptime(end_date, "%Y-%m-%d")
-        if isinstance(current_date, str):
-            current_date = datetime.strptime(current_date, "%Y-%m-%d")
-            
-        total_days = (end_date - current_date.replace(hour=0, minute=0, second=0, microsecond=0)).days
-        if total_days > 0:  # Prevent division by zero
-            decay_factor = np.exp(-3.0 * days_from_start / total_days)
-            volatility = base_volatility * (0.2 + 0.8 * decay_factor)
+    # Secondary cycle: 45-day period (1.5 months)
+    secondary_cycle = np.sin(days_from_start * 2 * np.pi / 45 + np.pi/3)
+    
+    # Tertiary cycle: 360-day period (12 months)
+    tertiary_cycle = np.sin(days_from_start * 2 * np.pi / 360 + np.pi/6)
 
-    # Add random overshooting for mean reversion targets
-    if np.random.random() < 0.15:  # 15% chance of setting new overshoot target
-        # Generate asymmetric overshoots
-        if np.random.random() < 0.5:  # Upside overshoot
-            overshoot = np.random.uniform(1.33, 2.0)
-        else:  # Downside overshoot
-            overshoot = np.random.uniform(0.5, 0.8)
-        target_mnav = power_law_mnav * overshoot
-    else:
-        target_mnav = power_law_mnav
+    # Combine cycles with different weights
+    combined_cycle = (0.5 * primary_cycle + 0.3 * secondary_cycle + 0.2 * tertiary_cycle)
+    
+    # Apply decaying power law to the maximum mNAV peaks
+    # Power law decay: max_mnav = initial_max * (days_from_start + 1)^(-decay_exponent)
+    initial_max_mnav = 7.0  # Starting maximum mNAV
+    decay_exponent = 0.5   # Controls how fast peaks decay (higher = faster decay)
+    time_factor = (days_from_start / 365.25) + 1  # Convert to years, add 1 to avoid zero
+    
+    # Calculate current maximum mNAV using power law decay
+    current_max_mnav = initial_max_mnav * (time_factor ** (-decay_exponent))
+    # Ensure minimum peak doesn't go below reasonable levels
+    current_max_mnav = max(2.5, current_max_mnav)
+    
+    # Map the combined cycle (-1 to 1) to mNAV range with more downside bias
+    # Normalize combined_cycle to [0, 1] range first
+    normalized_cycle = (combined_cycle + 1) / 2
+    
+    # Apply power function to bias toward lower values (more downside)
+    # Power > 1 creates more time spent at lower values
+    biased_cycle = normalized_cycle ** 2.5  # Strong bias toward lower values
+    
+    # Map to 3-zone asymmetric range with decaying peaks
+    if biased_cycle < 0.05:  # 5% of time in discount range (0.8 to 1.3)
+        base_mnav = 0.8 + (biased_cycle / 0.05) * 0.5  # Maps to 0.8-1.3
+    elif biased_cycle < 0.35:  # 30% of time in moderate premium range (1.3 to 2.5)
+        base_mnav = 1.3 + ((biased_cycle - 0.05) / 0.30) * 1.2  # Maps to 1.3-2.5
+    else:  # 65% of time in high premium range (2.5 to current_max_mnav)
+        peak_range = current_max_mnav - 2.5
+        base_mnav = 2.5 + ((biased_cycle - 0.35) / 0.65) * peak_range  # Maps to 2.5-current_max_mnav
 
-    # Calculate volatility and noise with decay
-    volatility *= (1 + 0.2 * np.sin(days_from_start / 30))
+    # No level shift needed - ranges already start at 1.3
+    # base_mnav is already in the correct range
+    
+    # Add some random volatility (much smaller than the cycle)
+    volatility = base_volatility * 0.3  # Reduced volatility to keep cycles clear
     noise = np.random.normal(0, volatility)
     
-    # Get previous mNAV (or use power law if first calculation)
-    current_mnav = getattr(calculate_mnav_with_volatility, 'last_mnav', power_law_mnav)
+    # Get previous mNAV for smoothing (or use base if first calculation)
+    current_mnav = getattr(calculate_mnav_with_volatility, 'last_mnav', base_mnav)
     
-    # Mean reversion strength varies randomly
-    reversion_speed = np.random.uniform(0.05, 0.15)
+    # Apply slight smoothing to prevent sharp jumps
+    smoothing_factor = 0.1  # How much to move toward target each day
+    new_mnav = current_mnav + (base_mnav - current_mnav) * smoothing_factor + noise
     
-    # Calculate new mNAV with mean reversion and noise
-    new_mnav = current_mnav + (target_mnav - current_mnav) * reversion_speed + noise
-    
-    # Apply minimum mNAV floor
-    min_mnav = power_law_mnav * 0.7
-    new_mnav = max(min_mnav, new_mnav)
+    # Ensure bounds are respected - range 0.8 to current_max_mnav (decaying)
+    new_mnav = max(0.8, min(current_max_mnav, new_mnav))
     
     # Store for next calculation
     calculate_mnav_with_volatility.last_mnav = new_mnav
