@@ -288,7 +288,7 @@ def get_preferred_shares_count(current_date, end_date=None):
         end_date = pd.Timestamp('2040-12-31')
     else:
         end_date = pd.Timestamp(end_date)
-    max_shares = 1_000_000  # Maximum 1M shares
+    max_shares = 10_000_000  # Maximum 1M shares
 
     if current_date < start_date:
         return 0
@@ -697,7 +697,7 @@ def plot_simulation_results(simulation, enable_preferred_shares=True):
     ax4.set_title('Bitcoin per 1000 Shares')
     ax4.set_ylim(btc_per_1000.min() * 0.95, btc_per_1000.max() * 1.05)
     
-    ax5 = fig.add_subplot(gs[4, 0])  # Daily Volume
+    ax5 = fig.add_subplot(gs[4, 1])  # Daily Volume (swapped to right column)
     ax5.plot(simulation.index, simulation['volume'], 'r-', label='Daily Volume', linewidth=2)
     ax5.set_ylabel('Number of Shares')
     ax5.set_title('Daily Trading Volume')
@@ -735,7 +735,7 @@ def plot_simulation_results(simulation, enable_preferred_shares=True):
     ax9.yaxis.set_major_formatter(millions_formatter)
 
     # Daily BTC Purchased plot
-    ax10 = fig.add_subplot(gs[4, 1])
+    ax10 = fig.add_subplot(gs[4, 0])  # Swapped to left column
     ax10.plot(simulation.index, simulation['btc_purchased'], 'r-', 
             label='Daily BTC Purchased', linewidth=2)
     ax10.set_ylabel('BTC Amount')
@@ -753,14 +753,14 @@ def plot_simulation_results(simulation, enable_preferred_shares=True):
     
     # Shift remaining plots down one position
     if enable_preferred_shares:
-        ax11 = fig.add_subplot(gs[5, 1])  # Preferred Shares (shifted)
+        ax11 = fig.add_subplot(gs[6, 0])  # Preferred Shares (swapped with cumulative dividends)
         ax11.plot(simulation.index, simulation['preferred_shares'], 'purple', 
                 label='Preferred Shares', linewidth=2)
         ax11.set_ylabel('Number of Shares')
         ax11.set_title('Preferred Shares Outstanding')
         ax11.yaxis.set_major_formatter(millions_formatter)
         
-        ax12 = fig.add_subplot(gs[6, 0])  # Cumulative Dividends (shifted)
+        ax12 = fig.add_subplot(gs[7, 0])  # Cumulative Dividends (swapped with preferred shares)
         cumulative_dividends = simulation['quarterly_dividend'].cumsum()
         ax12.plot(simulation.index, cumulative_dividends, 'purple', 
                 label='Cumulative Dividends', linewidth=2)
@@ -789,7 +789,7 @@ def plot_simulation_results(simulation, enable_preferred_shares=True):
         ax13.set_ylim(0, max_ratio * 1.05)
 
     # Add new Volume Percentage plot
-    ax14 = fig.add_subplot(gs[7, 0])  # Place in left column below dilution plot
+    ax14 = fig.add_subplot(gs[5, 1])  # Place in preferred shares position
     volume_pct = (simulation['volume'] / simulation['shares_outstanding']) * 100
     ax14.plot(simulation.index, volume_pct, 'r-', 
             label='Volume % of Shares', linewidth=2)
