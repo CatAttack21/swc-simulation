@@ -29,7 +29,7 @@ SWC (Seabridge Gold Inc.) Bitcoin strategy simulation
 - Oscillating cycles between 0.8 and decaying peaks over 1-3 month periods
 - 3-zone distribution: 5% discount (0.8-1.3), 30% moderate (1.3-2.5), 65% high premium (2.5-decaying max)
 - Decaying power law for peaks: max_mnav = 7.0 * (time_in_years + 1)^(-0.15)
-- mNAV is dampened by dilution rate: for each 1% dilution, mNAV is reduced by 2%
+- mNAV is dampened by dilution rate: for each 1% dilution, mNAV is reduced by 5%
 - Multiple overlapping sine wave cycles (45-day, 180-day, 360-day periods)
 
 ## Stock Price
@@ -60,7 +60,7 @@ SWC (Seabridge Gold Inc.) Bitcoin strategy simulation
 - Simplified dilution logic: 20% of daily trading volume when price increases from the previous day
 - Dilution occurs only if mNAV (market cap to NAV ratio) is above 1.1
 - Dilution only occurs on trading days (weekdays)
-- Dilution rate tracked and used to dampen future mNAV (1% dilution = 2% mNAV reduction)
+- Dilution rate tracked and used to dampen future mNAV (1% dilution = 5% mNAV reduction)
 - Rate decays exponentially when no dilution occurs (5% decay per day)
 
 ## Preferred Shares

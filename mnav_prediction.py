@@ -65,9 +65,9 @@ def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0
     smoothing_factor = 0.1  # How much to move toward target each day
     new_mnav = current_mnav + (base_mnav - current_mnav) * smoothing_factor + noise
     
-    # Apply dilution dampening: For each 1% dilution, dampen mNAV by 2%
-    dilution_dampening_factor = 1.0 - (dilution_rate_pct / 50.0)  # Divide by 50 for 2x effect
-    dilution_dampening_factor = max(0.5, dilution_dampening_factor)  # Minimum 50% dampening
+    # Apply dilution dampening: For each 1% dilution, dampen mNAV by 5%
+    dilution_dampening_factor = 1.0 - (dilution_rate_pct / 20.0)  # Divide by 20 for 5x effect
+    dilution_dampening_factor = max(0.2, dilution_dampening_factor)  # Minimum 20% dampening
     new_mnav *= dilution_dampening_factor
     
     # Ensure bounds are respected - range 0.8 to current_max_mnav (decaying)
