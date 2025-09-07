@@ -174,8 +174,8 @@ def calculate_daily_dilution(price_data, volume_data, days_since_last=0, dilutio
     date = price_data.index[-1]
     # Simple rule: dilute 20% of daily volume when price increases from previous day AND mNAV > 1.1
     if price_increase > 0.03 and current_mnav > 1.1:
-        # Calculate dilution as 5% of daily trading volume
-        dilution.loc[date, 'dilution_shares'] = volume_data.loc[date] * 0.10
+        # Calculate dilution as 20% of daily trading volume
+        dilution.loc[date, 'dilution_shares'] = volume_data.loc[date] * 0.20
         dilution.loc[date, 'funds_raised'] = dilution.loc[date, 'dilution_shares'] * price_data.loc[date]
     
     return dilution
