@@ -709,7 +709,7 @@ def plot_simulation_results(simulation, enable_preferred_shares=True):
     ax6.plot(simulation.index, simulation['stock_price'], 'g-', label='Stock Price', linewidth=2)
     ax6.set_ylabel('Stock Price (USD)')
     ax6.set_title('swc Stock Price')
-    ax6.set_ylim(simulation['stock_price'].min() * 0.95, simulation['stock_price'].max() * 1.05)
+    ax6.set_ylim(0, simulation['stock_price'].max() * 1.05)
     
     ax7 = fig.add_subplot(gs[1, 1])  # mNAV
     ax7.plot(simulation.index, simulation['mnav'], 'g-', label='mNAV', linewidth=2)

@@ -43,10 +43,10 @@ def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0
     biased_cycle = normalized_cycle ** 2.5  # Strong bias toward lower values
     
     # Map to 3-zone asymmetric range with decaying peaks
-    if biased_cycle < 0.05:  # 5% of time in discount range (0.8 to 1.3)
-        base_mnav = 0.8 + (biased_cycle / 0.05) * 0.5  # Maps to 0.8-1.3
-    elif biased_cycle < 0.35:  # 30% of time in moderate premium range (1.3 to 2.5)
-        base_mnav = 1.3 + ((biased_cycle - 0.05) / 0.30) * 1.2  # Maps to 1.3-2.5
+    if biased_cycle < 0.05:  # 5% of time in discount range (1.5 to 2.0)
+        base_mnav = 0.8 + (biased_cycle / 0.05) * 0.7  # Maps to 0.8-1.5
+    elif biased_cycle < 0.35:  # 30% of time in moderate premium range (1.5 to 2.5)
+        base_mnav = 1.5 + ((biased_cycle - 0.05) / 0.30) * 1.0  # Maps to 1.5-2.5
     else:  # 65% of time in high premium range (2.5 to current_max_mnav)
         peak_range = current_max_mnav - 2.5
         base_mnav = 2.5 + ((biased_cycle - 0.35) / 0.65) * peak_range  # Maps to 2.5-current_max_mnav
@@ -67,7 +67,7 @@ def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0
     
     # Apply dilution dampening: For each 1% dilution, dampen mNAV by 2%
     dilution_dampening_factor = 1.0 - (dilution_rate_pct / 50.0)  # Divide by 50 for 2x effect
-    dilution_dampening_factor = max(0.2, dilution_dampening_factor)  # Minimum 20% dampening
+    dilution_dampening_factor = max(0.05, dilution_dampening_factor)  # Minimum 5% dampening
     new_mnav *= dilution_dampening_factor
     
     # Ensure bounds are respected - range 0.8 to current_max_mnav (decaying)
