@@ -57,16 +57,16 @@ def calculate_mnav(market_cap, btc_holdings, btc_price):
     btc_value = btc_holdings * btc_price
     return market_cap / btc_value
 
-def calculate_mnav_correlated_volume(current_mnav, base_volume_pct=0.025, min_volume_pct=0.01, max_volume_pct=0.05):
+def calculate_mnav_correlated_volume(current_mnav, base_volume_pct=0.015, min_volume_pct=0.005, max_volume_pct=0.03):
     """
     Calculates volume percentage correlated to mNAV cyclical model
     Higher mNAV = Higher volume (more interest/activity)
-    Range: 1% to 5% of shares outstanding
+    Range: 0.5% to 3% of shares outstanding
     Args:
         current_mnav: Current mNAV value
-        base_volume_pct: Base volume percentage at mNAV = 1.5 (2.5%)
-        min_volume_pct: Minimum volume percentage (1%)
-        max_volume_pct: Maximum volume percentage (5%)
+        base_volume_pct: Base volume percentage at mNAV = 1.5 (1.5%)
+        min_volume_pct: Minimum volume percentage (0.5%)
+        max_volume_pct: Maximum volume percentage (3%)
     Returns: Volume percentage correlated to mNAV
     """
     # Normalize mNAV to a correlation factor
@@ -75,20 +75,20 @@ def calculate_mnav_correlated_volume(current_mnav, base_volume_pct=0.025, min_vo
     # mNAV 2.5+: High volume (high premium/speculation)
     
     if current_mnav <= 1.0:
-        # Below fair value: low volume (1.0% to 2.0%)
-        volume_factor = 0.4 + 0.4 * current_mnav  # 0.4 to 0.8 multiplier
+        # Below fair value: low volume (0.5% to 1.0%)
+        volume_factor = 0.33 + 0.33 * current_mnav  # 0.33 to 0.67 multiplier
     elif current_mnav <= 2.0:
-        # Fair to moderate premium: normal volume (2.0% to 3.5%)
-        volume_factor = 0.8 + 0.6 * (current_mnav - 1.0)  # 0.8 to 1.4 multiplier
+        # Fair to moderate premium: normal volume (1.0% to 2.0%)
+        volume_factor = 0.67 + 0.67 * (current_mnav - 1.0)  # 0.67 to 1.33 multiplier
     else:
-        # High premium: high volume with diminishing returns (3.5% to 5.0%)
+        # High premium: high volume with diminishing returns (2.0% to 3.0%)
         excess_mnav = current_mnav - 2.0
-        volume_factor = 1.4 + 0.6 * np.log(1 + excess_mnav) / np.log(4)  # Scaled log growth
+        volume_factor = 1.33 + 0.67 * np.log(1 + excess_mnav) / np.log(4)  # Scaled log growth
     
     # Apply volume factor to base percentage
     correlated_volume_pct = base_volume_pct * volume_factor
     
-    # Ensure bounds (1% to 5%)
+    # Ensure bounds (0.5% to 3%)
     return max(min_volume_pct, min(max_volume_pct, correlated_volume_pct))
 
 def calculate_volume_dampening_factor(days_from_start, initial_shares, current_shares):

@@ -2,34 +2,34 @@ SWC Yearly Key Metrics
 ============================
 
 Year: 2025
-BTC Price: $137,185.24
-Stock Price: $4.51
-BTC Holdings: 4,787.82
-Shares Outstanding: 341,327,680
-mNAV: 2.4107
-Market Cap: $5,898,449,462.85
-BTC per 1000 Shares: 0.0140
+BTC Price: $138,468.24
+Stock Price: $4.08
+BTC Holdings: 3,561.80
+Shares Outstanding: 306,281,628
+mNAV: 2.5887
+Market Cap: $4,434,218,008.19
+BTC per 1000 Shares: 0.0116
 ----------------------------
 
 Year: 2026
-BTC Price: $206,927.15
-Stock Price: $11.51
-BTC Holdings: 16,243.15
-Shares Outstanding: 611,265,606
-mNAV: 2.1319
-Market Cap: $30,200,808,708.99
-BTC per 1000 Shares: 0.0266
-Market Cap to Dividends Ratio: 3,915.6x
+BTC Price: $207,429.25
+Stock Price: $9.72
+BTC Holdings: 9,656.39
+Shares Outstanding: 462,474,642
+mNAV: 2.2546
+Market Cap: $17,978,616,121.27
+BTC per 1000 Shares: 0.0209
+Market Cap to Dividends Ratio: 2,331.0x
 ----------------------------
 
 Year: 2027
-BTC Price: $262,466.11
-Stock Price: $24.68
-BTC Holdings: 55,843.00
-Shares Outstanding: 1,138,798,962
-mNAV: 1.9350
-Market Cap: $131,314,461,568.71
-BTC per 1000 Shares: 0.0490
-Market Cap to Dividends Ratio: 3,502.5x
+BTC Price: $256,653.85
+Stock Price: $16.81
+BTC Holdings: 21,924.78
+Shares Outstanding: 690,297,841
+mNAV: 2.0438
+Market Cap: $50,482,437,133.48
+BTC per 1000 Shares: 0.0318
+Market Cap to Dividends Ratio: 1,346.5x
 ----------------------------
 

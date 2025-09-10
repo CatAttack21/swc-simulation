@@ -48,10 +48,10 @@ SWC (Seabridge Gold Inc.) Bitcoin strategy simulation
 ## Daily Trading Volume
 
 - Volume correlated to mNAV cyclical model (higher mNAV = higher volume)
-- Range: 1% to 5% of outstanding shares
-- Low mNAV (≤1.0): 1.0%-2.0% volume
-- Moderate mNAV (1.0-2.0): 2.0%-3.5% volume  
-- High mNAV (>2.0): 3.5%-5.0% volume
+- Range: 0.5% to 3% of outstanding shares
+- Low mNAV (≤1.0): 0.5%-1.0% volume
+- Moderate mNAV (1.0-2.0): 1.0%-2.0% volume  
+- High mNAV (>2.0): 2.0%-3.0% volume
 - Aggregated across all SWC tickers: SWC.AQ, TSWCF, 3M8.F
 - Small daily random noise (±5%)
 
