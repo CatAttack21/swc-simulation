@@ -741,9 +741,12 @@ def plot_simulation_results(simulation, enable_preferred_shares=True):
     
     ax7 = fig.add_subplot(gs[1, 1])  # mNAV
     ax7.plot(simulation.index, simulation['mnav'], 'g-', label='mNAV', linewidth=2)
+    ax7.axhline(y=0, color='red', linestyle='--', alpha=0.7, linewidth=1)
     ax7.set_ylabel('mNAV')
     ax7.set_title('mNAV')
-    ax7.set_ylim(simulation['mnav'].min() * 0.95, simulation['mnav'].max() * 1.05)
+    # Ensure y-axis always includes 0 and shows full range
+    y_max = simulation['mnav'].max() * 1.05
+    ax7.set_ylim(0, y_max)
     
     ax8 = fig.add_subplot(gs[2, 1])  # Implied Volatility
     implied_vol = calculate_implied_volatility(simulation['stock_price'])
@@ -751,7 +754,7 @@ def plot_simulation_results(simulation, enable_preferred_shares=True):
     ax8.set_ylabel('Volatility (%)')
     ax8.set_title('Stock Implied Volatility')
     ax8.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'{x:.1f}%'))
-    ax8.set_ylim(75, 300)
+    ax8.set_ylim(0, 200)
 
     ax9 = fig.add_subplot(gs[3, 1])  # Shares Outstanding
     ax9.plot(simulation.index, simulation['shares_outstanding'], 'r-', 
