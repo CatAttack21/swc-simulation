@@ -283,12 +283,12 @@ def get_preferred_shares_count(current_date, end_date=None):
         end_date: End date of simulation for S-curve calculation (defaults to 2040-12-31)
     Returns: Integer number of shares
     """
-    start_date = pd.Timestamp('2027-01-01')
+    start_date = pd.Timestamp('2026-06-01')
     if end_date is None:
         end_date = pd.Timestamp('2040-12-31')
     else:
         end_date = pd.Timestamp(end_date)
-    max_shares = 10_000_000  # Maximum 1M shares
+    max_shares = 100_000_000  # Maximum 1M shares
 
     if current_date < start_date:
         return 0
@@ -525,7 +525,7 @@ def simulate_through_2040(btc_data, swc_data, initial_shares, btc_holdings, star
                     simulate_through_2040.last_dilution_rate_pct = previous_rate * 0.95  # 5% decay per day
                 
                 # Check for quarterly dividend and preferred share revenue
-                if date >= pd.Timestamp('2027-01-01') and enable_preferred_shares:
+                if date >= pd.Timestamp('2026-06-01') and enable_preferred_shares:
                     # Handle preferred share sales revenue
                     pref_revenue, dividend_reserve = calculate_preferred_shares_revenue(market_cap, date)
                     if pref_revenue > 0:
@@ -537,7 +537,7 @@ def simulate_through_2040(btc_data, swc_data, initial_shares, btc_holdings, star
                     days_since_dividend = (date - last_dividend_date).days
                     if days_since_dividend >= 90:  # Quarterly
                         preferred_count = simulation.loc[date, 'preferred_shares']
-                        quarterly_amount = (100 * 0.05 / 4) * preferred_count  # $5 annual per $100 share
+                        quarterly_amount = (100 * 0.08 / 4) * preferred_count  # $8 annual per $100 share
                         simulation.loc[date, 'quarterly_dividend'] = quarterly_amount
                         
                         # Instead of reducing BTC purchases, use new dilution for dividends

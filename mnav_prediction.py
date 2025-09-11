@@ -25,7 +25,7 @@ def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0
     
     # Apply decaying power law to the maximum mNAV peaks
     # Power law decay: max_mnav = initial_max * (days_from_start + 1)^(-decay_exponent)
-    initial_max_mnav = 7.0  # Starting maximum mNAV
+    initial_max_mnav = 10.0  # Starting maximum mNAV
     decay_exponent = 0.5   # Controls how fast peaks decay (higher = faster decay)
     time_factor = (days_from_start / 365.25) + 1  # Convert to years, add 1 to avoid zero
     
@@ -44,12 +44,12 @@ def calculate_mnav_with_volatility(btc_value, days_from_start, base_volatility=0
     
     # Map to 3-zone asymmetric range with decaying peaks
     if biased_cycle < 0.05:  # 5% of time in discount range (1.5 to 2.0)
-        base_mnav = 0.8 + (biased_cycle / 0.05) * 0.7  # Maps to 0.8-1.5
+        base_mnav = 1.5 + (biased_cycle / 0.05) * 0.7  # Maps to 1.5-2.2
     elif biased_cycle < 0.35:  # 30% of time in moderate premium range (1.5 to 2.5)
-        base_mnav = 1.5 + ((biased_cycle - 0.05) / 0.30) * 1.0  # Maps to 1.5-2.5
+        base_mnav = 2.2 + ((biased_cycle - 0.05) / 0.30) * 1.0  # Maps to 2.2-3.2
     else:  # 65% of time in high premium range (2.5 to current_max_mnav)
         peak_range = current_max_mnav - 2.5
-        base_mnav = 2.5 + ((biased_cycle - 0.35) / 0.65) * peak_range  # Maps to 2.5-current_max_mnav
+        base_mnav = 3.2 + ((biased_cycle - 0.35) / 0.65) * peak_range  # Maps to 2.5-current_max_mnav
 
     # No level shift needed - ranges already start at 1.3
     # base_mnav is already in the correct range
