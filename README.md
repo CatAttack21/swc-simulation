@@ -67,7 +67,7 @@ SWC (Seabridge Gold Inc.) Bitcoin strategy simulation
 
 - S-curve adoption model of ATM that asymptotes to 100 Million shares
 - $100 face value
-- 5% annual yield
+- 8% annual yield
 
 ## Cumulative Preferred Share Dividends
 

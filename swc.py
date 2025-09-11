@@ -966,7 +966,7 @@ def main(start_date="2025-09-04", end_date="2028-12-31", initial_shares=27468320
 if __name__ == "__main__":
     # Example usage: provide your own start_date, initial_shares, and initial_btc
     # To disable preferred shares simulation:
-    simulation_results = run_complete_simulation("2025-09-04", "2027-12-31", 274683205, 2440, enable_preferred_shares=True)
+    simulation_results = run_complete_simulation("2025-09-04", "2027-12-31", 274683205, 2440, enable_preferred_shares=False)
     # 
     # To enable preferred shares simulation (default):
     # simulation_results = run_complete_simulation("2025-09-04", "2027-12-31", 274683205, 2440, enable_preferred_shares=True)
