@@ -151,7 +151,7 @@ def calculate_stock_price(predicted_mnav, btc_holdings, current_shares, btc_pric
 def calculate_daily_dilution(price_data, volume_data, days_since_last=0, dilution_rate=0.20, current_mnav=1.0):
     """
     Calculates daily dilution and funds raised with simplified logic:
-    - Dilute 20% of daily volume when price increases from previous day
+    - Dilute 10% of daily volume when price increases from previous day
     - Only dilute if mNAV is above 1.1
     Volume should be daily trading volume, not outstanding shares
     Returns: DataFrame with dilution amount and funds raised
@@ -172,9 +172,9 @@ def calculate_daily_dilution(price_data, volume_data, days_since_last=0, dilutio
     dilution['funds_raised'] = 0.0
     
     date = price_data.index[-1]
-    # Simple rule: dilute 20% of daily volume when price increases from previous day AND mNAV > 1.1
+    # Simple rule: dilute 10% of daily volume when price increases from previous day AND mNAV > 1.1
     if price_increase > 0.03 and current_mnav > 1.1:
-        # Calculate dilution as 20% of daily trading volume
+        # Calculate dilution as 10% of daily trading volume
         dilution.loc[date, 'dilution_shares'] = volume_data.loc[date] * 0.20
         dilution.loc[date, 'funds_raised'] = dilution.loc[date, 'dilution_shares'] * price_data.loc[date]
     
@@ -455,8 +455,8 @@ def simulate_through_2040(btc_data, swc_data, initial_shares, btc_holdings, star
             end_date_obj = end_date
         
         # Calculate current dilution rate for mNAV dampening
-        # Get the last dilution rate from recent activity
-        current_dilution_rate_pct = getattr(simulate_through_2040, 'last_dilution_rate_pct', 0.0)
+        # Use fixed dilution rate from calculate_daily_dilution function
+        current_dilution_rate_pct = 20.0  # 20% fixed rate matching calculate_daily_dilution
             
         current_mnav = calculate_mnav_with_volatility(
             btc_value, 
