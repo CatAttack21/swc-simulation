@@ -1,17 +1,17 @@
 # swc-simulation
-SWC (Seabridge Gold Inc.) Bitcoin strategy simulation
+SWC Bitcoin strategy simulation
 
 ## Bitcoin Price
 
 - Follow the Bitcoin Power law, price = 10**-17 * (days_since_genesis ** 5.8)
-- Support at 0.5x, Resistance at 4x
+- Support at 0.63x, Resistance at 2.5x
 - Superimpose 8 sinusoid functions over varying frequency/amplitude for price action
 
 ## Bitcoin CAGR
 
 - Derived from BTC performance
 - A Rolling window, year-over-year growth of Bitcoin Price
-- Roughly swings between 10%-50% median value
+- Roughly swings between 20%-60% median value
 
 ## Bitcoin Holdings
 
@@ -60,18 +60,18 @@ SWC (Seabridge Gold Inc.) Bitcoin strategy simulation
 - Simplified dilution logic: 20% of daily trading volume when price increases from the previous day
 - Dilution occurs only if mNAV (market cap to NAV ratio) is above 1.1
 - Dilution only occurs on trading days (weekdays)
-- Dilution rate tracked and used to dampen future mNAV (1% dilution = 5% mNAV reduction)
+- Dilution rate tracked and used to dampen future mNAV (10% dilution = 1% mNAV reduction)
 - Rate decays exponentially when no dilution occurs (5% decay per day)
 
 ## Preferred Shares
 
-- S-curve adoption model of ATM that asymptotes to 100 Million shares
+- S-curve adoption model of ATM that asymptotes to 10 Million shares
 - $100 face value
 - 8% annual yield
 
 ## Cumulative Preferred Share Dividends
 
-- Payouts made quarterly, targeting 5% annual return
+- Payouts made quarterly, targeting 8% annual return
 - Payouts made according to the shares outstanding
 - Dividends are paid by common stock dilution, limits BTC purchases
 
